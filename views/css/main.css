@@ -1,0 +1,47 @@
+body {
+	background: linear-gradient(45deg,rgba(0, 0, 0, 0) 48%,rgba(0, 0, 0, 0.2) 50%,rgba(0, 0, 0, 0) 52%),linear-gradient(-45deg,rgba(0, 0, 0, 0) 48%,rgba(0, 0, 0, 0.2) 50%,rgba(0, 0, 0, 0) 52%);
+	background-size: 1em 1em;
+	background-color: #fff;
+}
+
+.auth-form > table {
+	background-color: #CCCCCC;
+	border: 1px solid #666666;
+	border-radius: 8px;
+	padding: 20px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -60%);
+	vertical-align: middle;
+
+}
+
+.big_num {
+	text-align: center;
+	font-size: 120pt;
+}
+
+.main-form > table {
+	background-color: #FFCC99;
+	border: 1px solid #666666;
+	border-radius: 8px;
+	padding: 20px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -60%);
+	vertical-align: middle;
+}
+
+.error {
+	color: #CC0000;
+}
+
+#right-btn {
+	float: right;
+}
+
+p {
+	margin: 10px 0;
+}
