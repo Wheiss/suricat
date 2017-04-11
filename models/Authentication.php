@@ -24,6 +24,7 @@ class Authentication
 	*/
 	public static function authCheckToken($id, $token_hash, &$error_array)
 	{		
+		//	В этом блоке достаем токен и время его создания
 		try {
 		$db = Db::GetConnection();
 		$query = 'SELECT token,token_time FROM users WHERE id=:id';
@@ -43,9 +44,8 @@ class Authentication
 		}
 
 		$current_time = new DateTime();
-		var_dump($current_time);
-		var_dump($token_time);
 
+		//	Если токен совпадает и срок его годности не подошел к концу - записываем ID в сессию
 		if(password_verify($db_token, $token_hash) && ($current_time<$token_time)) {
 			$_SESSION['user_id'] = $id;
 			return true;
@@ -81,6 +81,7 @@ class Authentication
 				//	В случае успеха запишем id в сессию и печеньки
 				$_SESSION['user_id'] = $id;
 
+				//	Если запоминаем пользователя:
 				if(isset($_POST['remember']) && ($_POST['remember'] == true)){
 
 					//	В этой куке будем хранить id

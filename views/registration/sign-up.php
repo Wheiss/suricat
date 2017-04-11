@@ -28,7 +28,8 @@
 	</select>
 	
 	<select name="birth_month" form="reg-form">
-		<?php foreach (@Registration::months() as $num => $month) {
+		<?php
+		foreach (@Config::$months as $num => $month) {
 			if(@$_POST['birth_month'] != $num+1) {
 			echo '<option value="'.($num+1).'">'.$month.'</option>';
 			}

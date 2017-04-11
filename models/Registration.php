@@ -123,10 +123,4 @@ Class Registration
 		}
 	}
 
-	public static function months()
-	{
-		//	вывод месяцев в <select>
-		return array(Январь, Февраль, Март, Апрель, Май, Июнь, Июль, Август, Сентябрь, Октябрь, Ноябрь, Декабрь);
-	}
-
 }

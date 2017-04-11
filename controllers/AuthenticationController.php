@@ -11,12 +11,13 @@ class AuthenticationController
 			Authentication::authCheckToken($_COOKIE['kwo'], $_COOKIE['kwe'], $authentication_errors);
 		}
 
+		//	Если в сессии уже записан ид переходим в /num
 		if(isset($_SESSION['user_id'])) {
 			header('Location: /num');
 			die;
 		}
-		//	Используем /components/Authorisator.php
-
+		
+		//	При поступлении login в POST проводим авторизацию
 		if(!empty(($_POST['login']))) {
 			$auth = new Authentication( $_POST['login'], $_POST['password'], $authentication_errors);
 			if($auth->authCheck($authentication_errors)) {
