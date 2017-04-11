@@ -4,7 +4,7 @@ body {
 	background-color: #fff;
 }
 
-.auth-form > table {
+.auth-form {
 	background-color: #CCCCCC;
 	border: 1px solid #666666;
 	border-radius: 8px;
@@ -22,7 +22,10 @@ body {
 	font-size: 120pt;
 }
 
-.main-form > table {
+.date-text {
+	float: left;
+}
+.main-form {
 	background-color: #FFCC99;
 	border: 1px solid #666666;
 	border-radius: 8px;
@@ -33,15 +36,23 @@ body {
 	transform: translate(-50%, -60%);
 	vertical-align: middle;
 }
-
+.input-text {
+	float: right;
+}
 .error {
 	color: #CC0000;
 }
 
+#left-btn {
+	margin-right: 10px; 
+}
 #right-btn {
 	float: right;
 }
 
+#reg-form {
+	width: 350px;
+}
 p {
 	margin: 10px 0;
 }

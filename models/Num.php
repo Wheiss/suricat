@@ -6,24 +6,24 @@
 
 class Num
 {
-	private $user = '';
+	private $user_id = '';
 	private $num = 0;
 
-	public function __construct($user)
+	public function __construct($user_id)
 	{
 		// 1
-		$this->user = $user;
+		$this->user_id = $user_id;
 		
 		try {
 			$db = Db::GetConnection();
-			$query = "SELECT num FROM users WHERE login = '$user'";
+			$query = "SELECT num FROM users WHERE id = :user_id";		
 			$query = $db->prepare($query);
+            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT, 12);
 			$query->execute();
+			$num = $query->fetchAll()[0]['num'];
 		} catch (PDOException $e) {
 			echo 'Ошибка базы данных';
-		}
-		$num = $query->fetch()['num'];
-
+		}		
 		// 2
 		$this->num = $num;
 	}
@@ -40,11 +40,12 @@ class Num
 	{
 		try {
 			$db = Db::GetConnection();
-			$user = $this->user;
+			$user_id = $this->user_id;
 			//	Перед отправкой запроса увеличиваем наше число
 			$num = ++$this->num;
-			$query = "UPDATE users SET num = '$num' WHERE login = '$user'";
+			$query = "UPDATE users SET num = '$num' WHERE id = :user_id";
 			$query = $db->prepare($query);
+			$query->bindParam(':user_id', $user_id);
 			$query->execute();
 		} catch (PDOException $e) {
 			echo 'Ошибка базы данных';

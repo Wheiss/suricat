@@ -11,13 +11,11 @@ Class Registration
 
 	private $login = '';
 	private $password1 = '';
-	private $password2 = '';
 	private $birth;
-	public function __construct($login, $password1, $password2, $birth_day, $birth_month, $birth_year)
+	public function __construct($login, $password1, $birth_day, $birth_month, $birth_year)
 	{
 		$this->login = $login;
 		$this->password1 = $password1;
-		$this->password2 = $password2;
 		$this->birth = DateTime::createFromFormat('j n Y', $birth_day.' '.$birth_month.' '.$birth_year);
 	}
 
@@ -33,38 +31,6 @@ Class Registration
 		}		
 	}
 
-	private function loginExists($login, &$error_array)
-	{
-		try {
-			$db = Db::GetConnection();
-			$query = "SELECT login FROM users WHERE login = '$login'";
-			$user = $db->prepare($query);
-			$user->execute();
-		} catch (PDOException $e) {
-			echo 'Ошибка базы данных';
-		}
-		if($user->fetch())
-		{
-			$error_array['login_error'] = 'Такой логин уже зарегистрирован.';
-			return false;
-		} else
-		{
-			return true;
-		}
-	}
-
-	private function passwordRepeats($password1, $password2, &$error_array)
-	{
-		//	 Проверяем, дублируется ли пароль
-			if($password1 != $password2) {
-				$error_array['password_error'] = 'Пароли не совпадают.';
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-	}
 
 	private function dateCorrect( DateTime $date, &$registration_errors)
 	{
@@ -74,11 +40,14 @@ Class Registration
 			//	 Если Дата рождения > 150 лет назад ошибка TOO OLD
 			if($diff->y > 150) {
 				$registration_errors['date_error'] = 'TOO OLD.';
+				return false;
 			}
 			//	 Если Дата рождения < 5 лет назад ошибка TOO YOUNG
 			elseif ($diff->y < 5) {
 				$registration_errors['date_error'] = 'TOO YOUNG.';
+				return false;
 			}
+			return true;
 	}
 
 	/*
@@ -88,8 +57,6 @@ Class Registration
 	{
 		//	Выполняем все вышеописанные проверки
 		Registration::checkFieldsFill($this->login, $registration_errors);		
-		Registration::loginExists($this->login, $registration_errors);
-		Registration::passwordRepeats($this->password1, $this->password2, $registration_errors);
 		Registration::dateCorrect($this->birth, $registration_errors);
 		if(!empty($registration_errors)) {
 			return false;
@@ -103,7 +70,7 @@ Class Registration
 	*	Записываем все данные, полученные в конструкторе в базу данных
 	*/
 
-	public function writeAndLogIn()
+	public function writeAndLogIn(&$registration_errors)
 	{
 		try{
 			$db = Db::GetConnection();
@@ -112,27 +79,50 @@ Class Registration
 			$query = $db->prepare($query);
 			$query->bindParam(':login', $this->login);
 
-			//	Хешируем пароль
+			//	Хешируем пароль, приправленный локальным параметром
 			$hash = password_hash ($this->password1, PASSWORD_DEFAULT);
 			$query->bindParam(':password', $hash);
 
 			//	Переводим дату рождения в строку
 			$birth_date = $this->birth->format('Y-m-d');
 			$query->bindParam(':birth_date', $birth_date);
+			
 			if($query->execute()) {
-				//	Записываем в сессию юзера с паролем
-				$_SESSION['user'] = $this->login;
-				$_SESSION['password'] = $this->password1;
-				setcookie('user', $this->login, time()+3600, "", "", false, true);
-				setcookie('password', $this->password1, time()+3600, "", "", false, true);
 
+				//	Если запись прошла успешно, запишем в сессию ID пользователя
+				$data = "SELECT id FROM users WHERE login = :login";
+				$data = $db->prepare($data);
+                $login = $this->login;
+				$data->bindParam(':login', $login);
+				$data->execute();
+
+				$id = $data->fetchAll()[0]['id'];
+
+				//	Очищаем данные сессии
+				$_SESSION = [];
+				//	Удаляем куки сессии
+				if (ini_get("session.use_cookies")) {
+		            $params = session_get_cookie_params();
+		            setcookie('kwo');
+		            setcookie('kwe');
+		        }
+				//	Уничтожаем хранилище сессии
+				session_destroy();
+				
+				$_SESSION['user_id'] = $id;
+				
+				return true;
+			}
+			else
+			{
+				$registration_errors['login_error'] = 'Данный логин уже зарегистрирован';
+				return false;
 			}
 		} catch (PDOException $e) {
 			echo 'Ошибка базы данных';
 		}
-		
-		return true;
 	}
+
 	public static function months()
 	{
 		//	вывод месяцев в <select>

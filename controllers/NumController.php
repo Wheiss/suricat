@@ -5,8 +5,8 @@ class NumController
 	public function actionIndex()
 	{
 		//	Используем /components/Authorisator.php
-		if (Authorisator::authorise()) {
-			$number = new Num($_SESSION['user']);
+		if (isset($_SESSION['user_id'])) {
+			$number = new Num($_SESSION['user_id']);
 
 			//	Если мы нажали на +1
 			if(!empty($_POST['plusplus'])) {

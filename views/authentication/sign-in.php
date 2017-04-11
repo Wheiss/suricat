@@ -7,31 +7,23 @@
 </head>
 <body>
 	<form action="/auth" method="post" class="auth-form">
-	<table>
-		<tr>
-		<td><p>Ваш логин:</p></td>
-		<td><input type="text" name="login" value="<?=htmlspecialchars(@$_POST['login'])?>" /></td>
-		</tr>
-		<tr> </tr>
-		<tr>
-		<td><p>Пароль:</p></td>
-		<td><input type="password" name="password" value="<?=htmlspecialchars(@$_POST['password'])?>" /></td>
-		</tr>
-		<tr> </tr>
-		<tr>
-			<td colspan="2"><?php 
-			if(!empty($authentication_errors)) {
-				foreach ($authentication_errors as $name => $text) {
-					echo "<p class='error'>$text</p>";
-				}
-			}?>
-			</td>
-		</tr>
-		<tr>
-		<td><input type="submit" value="Войти" /></td>
-		<td><button form="redirect" onClick='location.href="/sign-up"' id="right-btn">Зарегистрироваться</button></td>
-		</tr>
-	</table>
+		<p>Ваш логин:
+		<input class="input-text" type="text" name="login" value="<?=htmlspecialchars(@$_POST['login'])?>" />
+		</p>
+		<p>Пароль:
+		<input class="input-text" type="password" name="password" value="<?=htmlspecialchars(@$_POST['password'])?>" />
+		</p>
+		<p><input type="checkbox" name="remember">Запомнить меня</p>
+		<?php 
+		if(!empty($authentication_errors)) {
+			foreach ($authentication_errors as $name => $text) {
+				echo "<p class='error'>$text</p>";
+			}
+		}?>
+		<p>
+		<input type="submit" value="Войти" /><button form="redirect" onClick='location.href="/sign-up"' id="right-btn">Зарегистрироваться</button>
+		</p>
+		
 	</form>
 </body>
 </html>
