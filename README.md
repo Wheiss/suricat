@@ -1,6 +1,6 @@
 # suricat
 Решение задачки от суриката:
-https://suricat.000webhostapp.com
+https://suricat.000webhostapp.com/auth
 
 Сама задача:
 1) Запили страничку, посередине которой форма входа с полями под логин и пароль.
